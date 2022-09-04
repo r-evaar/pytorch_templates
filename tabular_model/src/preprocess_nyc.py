@@ -27,10 +27,9 @@ def process_nyc_dataset(df):
     print('done')
 
 
+# Testing
 if __name__ == '__main__':
     df = pd.read_csv('../Data/NYCTaxiFares.csv')
     process_nyc_dataset(df)
-
-    ### Testing
-    # pd.set_option('display.max_columns', None)
-    # print(df.head())
+    pd.set_option('display.max_columns', None)
+    print(df.head())

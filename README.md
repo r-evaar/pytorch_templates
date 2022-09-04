@@ -3,9 +3,12 @@ PyTorch templates for different types of ML models
 
 ### Updates 
 ---
-* Started working on the Tabular-Model for ANN regression
+* Continue the work on the Tabular-Model for ANN regression
 
 ### Description
 ---
-[NULL]
+#### Available Models
+| **Model** | **Description** | **Status** |
+| - | - | - |
+| Tabular      | [Null]       | *In development* |
 
