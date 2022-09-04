@@ -1,5 +1,5 @@
 import unittest
-from ..utils.measurements import *
+from tabular_model.utils.measurements import *
 
 
 class TestMeasurements(unittest.TestCase):
