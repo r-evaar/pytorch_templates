@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import torch
-from tabular_model.utils.resources import device_name
+from utils.resources import device_name
 
 
 def pd_to_torch(df, cat_features=None, cont_features=None, y_feature=None, categorical_target=False, gpu=False):

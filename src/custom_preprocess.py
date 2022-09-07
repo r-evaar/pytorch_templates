@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from tabular_model.utils.measurements import haversine
+from utils.measurements import haversine
 
 
 def process_nyc_dataset(df):

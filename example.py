@@ -1,5 +1,5 @@
 import pandas as pd
-from src.preprocess_nyc import process_nyc_dataset
+from src.custom_preprocess import process_nyc_dataset
 from src.preprocess import pd_to_torch
 
 nyc = pd.read_csv('./data/NYCTaxiFares.csv')
