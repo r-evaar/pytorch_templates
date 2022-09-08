@@ -1,33 +1,54 @@
 # PyTorch Templates
 PyTorch templates for different types of ML models
 
-### Updates 
----
+### Updates
+[No release yet]
+
+### *Developer Status*
 * Continue the work on the Tabular-Model for ANN regression
 
-#### *Development Notes*
-* **Required**: Code and repo documentation
+#### (*Development Notes*)
 * **Required**: Unit test for the preprocessing function @pd_to_torch
 
 ### Description
----
+This repo aims to provide templates for pytorch modules of different neural network types. The targeted modules include: Tabular, CNN,& RNN modules supporting both classification and regression problems.
+
+Pre-processing to a training-ready format is provided for the data formats specified in the table below.
+
 #### Available Models
 | **Model** | **Description** | **Status** |
 | - | - | - |
-| Tabular      | [Null]       | *In development* |
+| Tabular | Handles tabular data of 1-d input with a simple ANN. The data should be provided as a pandas dataframe with continuous features, categorical features, or both.  | *In development* |
+| CNN | [NA] | *Pending* |
+| RNN | [NA] | *Pending* |
 
 ---
----
 
-## Tabular Model for ANN Regression
+## Tabular Model
 
-### Updates
----
-* NewYork City Taxi Fare dataset added (nyc dataset)
-* General preprocessing function added (@pd_to_torch)
-* custom preprocessing function added (@preprocess_nyc)
+### *Developer Notes*
+* DONE
+    - NewYork City Taxi Fare dataset (nyc dataset)
+    - General preprocessing function (@pd_to_torch)
+    - custom preprocessing function (@preprocess_nyc)
 
-### Description
----
-[NULL]
+* Pending  
+    - Tensors to DataLoader function
+    - TabularModel class constructor
+    - `TabularModel.fit()`: Enclose all pre-processing stages and prepare data for training. Should handle validation split.
+    - `TabularModel.training()`: Train on fit data with a given configuration
+    - `TabularModel.__call__()`: Predict data output.
+
+
+* Backlog  
+    - `TabularModel.config`: Training, validation, and inference Settings
+
+
+
+### Features
+[NA]
+
+### Example
+[NA]
+
 

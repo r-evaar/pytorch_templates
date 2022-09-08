@@ -5,6 +5,28 @@ from utils.resources import device_name
 
 
 def pd_to_torch(df, cat_features=None, cont_features=None, y_feature=None, categorical_target=False, gpu=False):
+    """
+    :param df: Tabular data as a pandas dataframe
+    :param cat_features: Categorical features names as a list of strings
+    :param cont_features: Continuous features names as a list of strings
+    :param y_feature: Single string representing the target feature name
+    :param categorical_target: Boolean for whether the target is categorical
+    :param gpu: Boolean for whether a cuda device should be used if available
+    :return:
+        Three outputs are returned to the following order:
+        cat, cont, y
+
+        ONLY if their corresponding feature input arg is not None
+
+        Example: pd_to_torch(df, ['f1', 'f2'], None, 'target') would return:
+        cat, y
+
+        cat: Tensor holding categorical features data | shape=(batch,channel)
+        cont: Tensor holding continuous features data | shape=(batch,channel)
+        y: Tensor holding target feature data |
+            shape=(batch,1) if continuous
+            shape=(batch,) if categorical
+    """
 
     # x_features are lists containing the column names for categorical (cat), continuous (cont), and target data series
     # in the dataframe (df). x_features can be a string if a single column is selected.

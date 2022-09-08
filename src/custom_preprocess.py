@@ -4,6 +4,14 @@ from utils.measurements import haversine
 
 
 def process_nyc_dataset(df):
+    """
+    :param df: A dataframe for the NYC dataset or subset
+
+    Updates (In-place) the NYC set with categorical feature columns based on existing ones
+            - Hour: Pickup hour | range(24)
+            - AMorPM: Pickup time type | ['AM', 'PM']
+            - Weekday: Pickup day in the week | ['Fri', 'Mon', 'Sat', 'Sun', 'Thu', 'Tue', 'Wed']
+    """
     print('Processing NYC dataset .. ', end='')
 
     earth_radius = 6.3781e3
@@ -17,12 +25,12 @@ def process_nyc_dataset(df):
 
     # New Features (Hour, AMorPM, Weekday)
     df['pickup_datetime'] = pd.to_datetime(df['pickup_datetime'])  # Convert to datetime objects
-    df['EDTdate'] = df['pickup_datetime'] - pd.Timedelta(hours=4)  # Compensate for time difference
+    df['date_EDT'] = df['pickup_datetime'] - pd.Timedelta(hours=4)  # Compensate for time difference
     #
     #
-    df['Hour'] = df['EDTdate'].dt.hour  # pd.Series.dt method, returns hour as an integer
+    df['Hour'] = df['date_EDT'].dt.hour  # pd.Series.dt method, returns hour as an integer
     df['AMorPM'] = np.where(df['Hour'] > 12, 'PM', 'AM')
-    df['Weekday'] = df['EDTdate'].dt.strftime("%a")  # pd.Series.dt method, returns week day as a string
+    df['Weekday'] = df['date_EDT'].dt.strftime("%a")  # pd.Series.dt method, returns week day as a string
 
     print('done')
 
