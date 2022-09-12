@@ -1,11 +1,12 @@
 import pandas as pd
 from src.custom_preprocess import process_nyc_dataset
 from src.preprocess import pd_to_torch
-from src.model import TabularModel
+from src.models import TabularModel
 
 # Data Loading and Pre-Processing
-nyc = pd.read_csv('./data/NYCTaxiFares.csv')
-process_nyc_dataset(nyc)
+# nyc = pd.read_csv('./data/NYCTaxiFares.csv')
+# process_nyc_dataset(nyc)
+nyc = pd.read_csv('./tests/NYCTaxiFaresPreProcessed.csv')
 
 # Identifying Features (cat & cont) in the tabular dataframe
 categorical_features = ['Hour', 'AMorPM', 'Weekday']
@@ -19,5 +20,8 @@ classification = False
 cat, cont, y = pd_to_torch(nyc, categorical_features, continuous_features, y_feature,
                            categorical_target=classification, gpu=True)
 
-model = TabularModel(layers=[], classification=classification)
+model = TabularModel(layers=[50, 100, 50], classification=classification)
+model.fit(cat, cont, y, ratios=[0.8, 0.1, 0.1])
+
+model # Debug
 

@@ -15,6 +15,6 @@ def gpu_device_name():
 def device_name(gpu=False):
     """
     :param gpu: Boolean for whether to use cpu or gpu tensors
-    :return: name of the tensors device based on the selected <gpu> option
+    :return: name of the tensors device based on the selected 'gpu' option
     """
     return gpu_device_name() if gpu else 'cpu'
