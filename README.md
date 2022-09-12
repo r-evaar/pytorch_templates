@@ -8,7 +8,7 @@ PyTorch templates for different types of ML models
 * Continue the work on the Tabular-Model for ANN regression
 
 #### (*Development Notes*)
-* **Required**: Unit test for the preprocessing function @pd_to_torch
+* **Required**: None
 
 ### Description
 This repo aims to provide templates for pytorch modules of different neural network types. The targeted modules include: Tabular, CNN,& RNN modules supporting both classification and regression problems.
