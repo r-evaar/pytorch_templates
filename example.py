@@ -23,5 +23,7 @@ cat, cont, y = pd_to_torch(nyc, categorical_features, continuous_features, y_fea
 model = TabularModel(layers=[50, 100, 50], classification=classification)
 model.fit(cat, cont, y, ratios=[0.8, 0.1, 0.1])
 
-model # Debug
+d = model.train_loader._get_iterator().next()
+x = model.forward(d[0], d[1])
+x
 

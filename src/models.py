@@ -1,3 +1,5 @@
+import torch
+
 import torch.nn as nn
 import warnings
 from dataclasses import dataclass
@@ -88,11 +90,16 @@ class TabularModel(nn.Module):
             self.cont = True
             data.append(cont_data)
             n_cont_features = cont_data.shape[1]
+            self.cont_batch_norm = self.configs.cfg_batch_norm(n_cont_features)
 
         data.append(y)
+        device = y.device.type
 
         total_in_features = n_embeddings + n_cont_features
-        self.hidden_layers[0].in_features = total_in_features  # Resetting no. input features
+
+        self.hidden_layers[0] = nn.Linear(
+            total_in_features, self.hidden_layers[0].out_features
+        )  # Resetting number of input features
 
         # Resetting weights because the neural synapse has been altered
         # Retraining is required for a functioning network
@@ -119,6 +126,34 @@ class TabularModel(nn.Module):
             self.val_loader = DataLoader(subsets[1], set_sizes[1])
             self.test_loader = DataLoader(subsets[2], set_sizes[2])
 
+        if device == 'cuda':
+            self.cuda()
 
+    def forward(self, x_cat=None, x_cont=None):
+        assert x_cat is not None or x_cont is not None, "No data to propagate"
+
+        ### Preparing categorical and continuous input for the first layer
+        x = []
+
+        if self.cat:
+            embeddings = []
+            embeddings.extend([
+                layer(x_cat[:, feature]) for feature, layer in enumerate(self.embed_layers)
+            ])
+            x_cat = torch.cat(embeddings, dim=1)
+            x_cat = self.configs.cfg_dropout(x_cat)
+            x.append(x_cat)
+
+        if self.cont:
+            x_cont = self.cont_batch_norm(x_cont)
+            x.append(x_cont)
+
+        x = torch.cat(x, dim=1)  # Convert x from a list of tensors into a concatenated tensor
+
+        ### Forward Propagation
+        x = self.hidden_layers(x)
+        x = self.out_layer(x)
+
+        return x
 
 
