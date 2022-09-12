@@ -1,54 +1,47 @@
 # PyTorch Templates
-PyTorch templates for different types of ML models
-
 ### Updates
 [No release yet]
 
-### *Developer Status*
-* Continue the work on the Tabular-Model for ANN regression
-
-#### (*Development Notes*)
-* **Required**: None
-
 ### Description
-This repo aims to provide templates for pytorch modules of different neural network types. The targeted modules include: Tabular, CNN,& RNN modules supporting both classification and regression problems.
+This repository provides an API for simple and quick use of different types of neural networks, and it can also be used as templates for custom pytorch modules and further development. The targeted modules include: Tabular, CNN, & RNN modules supporting both classification and regression problems.
 
-Pre-processing to a training-ready format is provided for the data formats specified in the table below.
+Pre-processing input data into a training-ready format is automatically included for the data formats specified in the table below.
 
 #### Available Models
 | **Model** | **Description** | **Status** |
 | - | - | - |
-| Tabular | Handles tabular data of 1-d input with a simple ANN. The data should be provided as a pandas dataframe with continuous features, categorical features, or both.  | *In development* |
+| Tabular | Handles tabular data with 1-dimensional input to a simple ANN. The data should be provided as a pandas dataframe with continuous features, categorical features, or both. | *In development* |
 | CNN | [NA] | *Pending* |
 | RNN | [NA] | *Pending* |
+
+### *Development Status*
+* Continue the work on the Tabular-Model for ANN regression
 
 ---
 
 ## Tabular Model
+
+### Features
+[IP]
+
+### Example
+[IP]
 
 ### *Developer Notes*
 * DONE
     - NewYork City Taxi Fare dataset (nyc dataset)
     - General preprocessing function (@pd_to_torch)
     - custom preprocessing function (@preprocess_nyc)
-
-* Pending  
     - Tensors to DataLoader function
     - TabularModel class constructor
     - `TabularModel.fit()`: Enclose all pre-processing stages and prepare data for training. Should handle validation split.
+
+* Pending  
     - `TabularModel.training()`: Train on fit data with a given configuration
     - `TabularModel.__call__()`: Predict data output.
-
+    - `TabularModel.configs`: Training, evaluation, and inference Settings
 
 * Backlog  
-    - `TabularModel.config`: Training, validation, and inference Settings
-
-
-
-### Features
-[NA]
-
-### Example
-[NA]
-
+    - Complete all unit tests
+    
 
