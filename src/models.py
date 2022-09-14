@@ -1,24 +1,46 @@
 import torch
-
 import torch.nn as nn
 import warnings
-from dataclasses import dataclass
 from src.custom_layers import outLayer1d
 from torch.utils.data import TensorDataset, random_split, DataLoader
 from utils.data import ratios_to_integers
+from torch.optim import Adam
+
+class Configs:
+
+    def set_batch_norm(self, batch_norm):
+        self.batch_norm = nn.BatchNorm1d if batch_norm else lambda x: x
+        self.batch_norm_on = batch_norm
+
+    def set_dropout(self, dropout):
+        self.dropout = nn.Dropout(dropout)
+        self.dropout_percentage = dropout * 100
+
+    def __init__(self):
+        self.activation = nn.ReLU
+        self.set_batch_norm(True)
+        self.set_dropout(0.05)
+        self.batch_size = 512
+        self.optimizer = Adam
+        self.lr = 1e-3
+        self.verbose = True
+        self.verbose_freq = 5
+
+    def __str__(self):
+        out = [
+            f"Activation:\t\t\t\t{self.activation}\n",
+            f"Batch Normalization:\t{self.batch_norm_on}\n",
+            f"Dropout:\t\t\t\t{self.dropout_percentage:.0f}%\n",
+            f"Batch Size:\t\t\t\t{self.batch_size}\n",
+            f"Optimizer:\t\t\t\t{self.optimizer}\n",
+            f"Learning Rate:\t\t\t{self.lr}\n",
+            f"Verbose:\t\t\t\t{'ON' if self.verbose else 'OFF'}\n",
+            f"Verbose Frequency:\t\t{self.verbose_freq}\n",
+        ]
+        return "".join(out)
 
 
 class TabularModel(nn.Module):
-
-    def configure(self, activation=nn.ReLU, batch_norm=True, dropout=0.05):
-        @dataclass
-        class configs:
-            cfg_activation = activation
-            cfg_batch_norm = nn.BatchNorm1d if batch_norm else lambda x: x
-            cfg_dropout = nn.Dropout(dropout)
-            cfg_batch_size = 512
-
-        self.configs = configs
 
     def __init__(self, layers, out_size=1, classification=False):
         super().__init__()
@@ -28,7 +50,7 @@ class TabularModel(nn.Module):
         self.val_loader = None
         self.test_loader = None
         self.is_fit = False
-        self.configure()
+        self.configs = Configs()
 
         self.hidden_layers = []
 
@@ -37,9 +59,9 @@ class TabularModel(nn.Module):
 
         for out_features in layers:
             self.hidden_layers.append(nn.Linear(in_features, out_features))
-            self.hidden_layers.append(self.configs.cfg_activation(inplace=True))
-            self.hidden_layers.append(self.configs.cfg_batch_norm(out_features))
-            self.hidden_layers.append(self.configs.cfg_dropout)
+            self.hidden_layers.append(self.configs.activation(inplace=True))
+            self.hidden_layers.append(self.configs.batch_norm(out_features))
+            self.hidden_layers.append(self.configs.dropout)
             in_features = out_features
 
         self.hidden_layers = nn.Sequential(*self.hidden_layers)
@@ -90,7 +112,7 @@ class TabularModel(nn.Module):
             self.cont = True
             data.append(cont_data)
             n_cont_features = cont_data.shape[1]
-            self.cont_batch_norm = self.configs.cfg_batch_norm(n_cont_features)
+            self.cont_batch_norm = self.configs.batch_norm(n_cont_features)
 
         data.append(y)
         device = y.device.type
@@ -117,7 +139,7 @@ class TabularModel(nn.Module):
         self.splits = 1 if ratios == [1] else 2 if len(ratios) == 2 else 3
         subsets = random_split(dataset, set_sizes)
 
-        self.train_loader = DataLoader(subsets[0], self.configs.cfg_batch_size)
+        self.train_loader = DataLoader(subsets[0], self.configs.batch_size)
 
         # Development Note: Requires checking if maximum batch_size can be handled by memory
         if self.splits == 2:
@@ -141,7 +163,7 @@ class TabularModel(nn.Module):
                 layer(x_cat[:, feature]) for feature, layer in enumerate(self.embed_layers)
             ])
             x_cat = torch.cat(embeddings, dim=1)
-            x_cat = self.configs.cfg_dropout(x_cat)
+            x_cat = self.configs.dropout(x_cat)
             x.append(x_cat)
 
         if self.cont:
@@ -156,4 +178,5 @@ class TabularModel(nn.Module):
 
         return x
 
+    # def training(self, criterion, iterations=10):
 
