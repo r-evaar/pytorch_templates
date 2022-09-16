@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 import warnings
+import time
+import datetime
 from src.custom_layers import outLayer1d
 from torch.utils.data import TensorDataset, random_split, DataLoader
 from utils.data import ratios_to_integers
@@ -178,5 +180,43 @@ class TabularModel(nn.Module):
 
         return x
 
-    # def training(self, criterion, iterations=10):
+    def train_model(self, criterion, epochs=10):
+        assert self.is_fit, "No data to train on. Use the 'fit' method to add a dataset to your model"
+        self.train()  # Training mode. Batch Normalization is Updating
 
+        optimizer = self.configs.optimizer(self.parameters(), lr=self.configs.lr)
+        losses = []
+
+        m = len(self.train_loader.dataset)
+        start_time = time.time()
+        for i in range(epochs):
+
+            verbose = ((i+1) % self.configs.verbose_freq == 0 or i == 0) and self.configs.verbose
+
+            fmt = len(str(epochs))
+            print(f"\n=== Epoch #%0{fmt}i ===========" % (i+1)) if verbose else None
+            # Format specifier is dynamic
+
+            epoch_loss = 0
+            for b, batch in enumerate(self.train_loader):
+                x_cat = batch[0]
+                x_cont = batch[1]
+                y = batch[2]
+
+                y_pred = self.forward(x_cat=x_cat, x_cont=x_cont).view(-1)
+                loss = criterion(y_pred, y)
+                epoch_loss += (loss*(y.shape[0]/m))
+
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+
+                if verbose:
+                    t = str(datetime.timedelta(seconds=round(time.time()-start_time)))
+                    print(f"Batch_{b:03d}\tLoss: {loss:.5f}\tElapsed: {t}")
+
+            losses.append(epoch_loss.cpu().detach().numpy())
+
+        print(f"Training completed. Total time={str(datetime.timedelta(seconds=round(time.time() - start_time)))}")
+        return losses
+        
