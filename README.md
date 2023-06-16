@@ -1,6 +1,6 @@
 # PyTorch Templates
 ### Updates
-*No release yet*
+Development will be moving to https://github.com/r-evaar/torch_engine
 
 ### Description
 This repository provides a library for simple and quick use of different types of neural networks, and it can also be used as templates for custom pytorch modules and further development. The targeted modules include: Tabular, CNN, & RNN modules supporting both classification and regression problems.
